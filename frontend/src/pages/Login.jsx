@@ -55,7 +55,7 @@ export default function Login() {
 
   const fillDemo = (role) => {
     if (role === "admin") setForm({ email: "admin@acmecorp.com", password: "Admin@1234" });
-    else setForm({ email: "anas@acmecorp.com", password: "Employee@1234" });
+    else setForm({ email: "yousef@acmecorp.com", password: "Employee@1234" });
   };
 
   return (
@@ -192,7 +192,7 @@ export default function Login() {
         </p>
 
         <p style={{ textAlign: "center", color: C.textMuted, fontSize: 10, marginTop: 12, letterSpacing: "0.03em" }}>
-          Applied Science Private University — GP2 2026
+          PhishGuard AI — Security Awareness Training
         </p>
       </div>
 

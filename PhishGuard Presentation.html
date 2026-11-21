@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhishGuard AI — GP2 2026</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#09090f;color:#e8e8f4;font-family:'Segoe UI','Inter',sans-serif;height:100vh;overflow:hidden;user-select:none;cursor:pointer}
+.deck{width:100%;height:100vh;position:relative}
+
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+  padding:56px 90px;
+  opacity:0;transform:translateX(50px);
+  transition:opacity .42s ease,transform .42s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;
+}
+.slide.active{opacity:1;transform:translateX(0);pointer-events:all}
+.slide.exit{opacity:0;transform:translateX(-50px)}
+.slide.center{align-items:center;text-align:center}
+
+.tag{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#3b82f6;margin-bottom:16px}
+h1{font-size:46px;font-weight:800;letter-spacing:-.025em;line-height:1.08;color:#e8e8f4;margin-bottom:32px}
+h1 em{font-style:normal;color:#3b82f6}
+h1 span.r{color:#ef4444}
+h1 span.g{color:#10b981}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;width:100%}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;width:100%}
+
+.card{background:#101018;border:1px solid #1a1a28;border-radius:12px;padding:22px}
+.card-icon{font-size:26px;margin-bottom:12px}
+.card-title{font-size:14px;font-weight:700;color:#e8e8f4;margin-bottom:6px}
+.card-body{font-size:12px;color:#525270;line-height:1.65}
+
+.stat{text-align:center}
+.stat-num{font-size:52px;font-weight:800;letter-spacing:-.03em;line-height:1;margin-bottom:9px}
+.stat-lbl{font-size:12px;color:#525270;line-height:1.5}
+
+.bullet{display:flex;align-items:flex-start;gap:10px;margin-bottom:11px}
+.dot{width:6px;height:6px;border-radius:50%;margin-top:7px;flex-shrink:0}
+.bt{font-size:13px;color:#525270;line-height:1.55}
+.bt strong{color:#e8e8f4;font-weight:600}
+
+.flow{display:flex;align-items:flex-start;width:100%;gap:0}
+.fstep{flex:1;text-align:center}
+.fcircle{width:64px;height:64px;border-radius:50%;border:2px solid #3b82f6;background:#101018;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px}
+.ftitle{font-size:12px;font-weight:700;color:#e8e8f4;margin-bottom:4px}
+.fdesc{font-size:11px;color:#525270;line-height:1.45}
+.farrow{flex-shrink:0;width:32px;text-align:center;color:#3b82f6;font-size:20px;padding-top:20px}
+
+.table-wrap{width:100%;border:1px solid #1a1a28;border-radius:10px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#0d0d16;color:#525270;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:10px 14px;text-align:left;font-size:10px}
+td{padding:10px 14px;color:#e8e8f4;border-top:1px solid #1a1a28}
+tr:nth-child(even) td{background:#0c0c15}
+td.muted{color:#525270;font-size:11px}
+td .tag-pill{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}
+.pill-blue{background:rgba(59,130,246,.12);color:#3b82f6}
+.pill-red{background:rgba(239,68,68,.12);color:#ef4444}
+.pill-amber{background:rgba(245,158,11,.12);color:#f59e0b}
+.pill-green{background:rgba(16,185,129,.12);color:#10b981}
+.pill-muted{background:#1a1a28;color:#525270}
+
+.arch-box{background:#101018;border:1px solid #1a1a28;border-radius:10px;padding:16px 18px}
+.arch-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+.arch-item{font-size:12px;color:#525270;padding:5px 0;border-bottom:1px solid #14141f}
+.arch-item:last-child{border-bottom:none}
+.arch-item span{float:right;font-size:11px}
+
+.cover-logo{width:76px;height:76px;background:#3b82f6;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 26px}
+.cover-title{font-size:58px;font-weight:800;letter-spacing:-.03em;margin-bottom:14px}
+.cover-sub{font-size:17px;color:#525270;margin-bottom:38px}
+.cover-chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.chip{background:#101018;border:1px solid #1a1a28;border-radius:6px;padding:6px 14px;font-size:11px;color:#525270;letter-spacing:.04em}
+
+.demo-items{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:28px}
+.demo-step{background:#101018;border:1px solid #1a1a28;border-radius:8px;padding:9px 16px;font-size:13px;color:#525270}
+
+.pb{position:fixed;bottom:0;left:0;height:3px;background:#3b82f6;transition:width .4s ease;z-index:999;border-radius:0 2px 0 0}
+.sn{position:fixed;bottom:13px;right:20px;font-size:11px;color:#3a3a55;letter-spacing:.06em;z-index:999}
+.hint{position:fixed;bottom:13px;left:50%;transform:translateX(-50%);font-size:11px;color:#2a2a40;letter-spacing:.05em;z-index:999}
+
+.badge-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.badge-card{background:#0d0d16;border:1px solid #1a1a28;border-radius:10px;padding:13px;text-align:center}
+.be{font-size:22px;margin-bottom:5px}
+.bn{font-size:11px;font-weight:700;color:#e8e8f4;margin-bottom:2px}
+.bd{font-size:10px;color:#525270}
+
+.col3-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- 1: TITLE -->
+<div class="slide center active" id="s0">
+  <div class="cover-logo">🛡️</div>
+  <h1 class="cover-title">PhishGuard AI</h1>
+  <p class="cover-sub">AI-Driven Phishing Simulation &amp; Awareness Platform</p>
+  <div class="cover-chips">
+    <span class="chip">GP2 — June 2026</span>
+    <span class="chip">Applied Science Private University</span>
+    <span class="chip">Supervised by Dr. Fadi Batah</span>
+  </div>
+  <div class="cover-chips" style="margin-top:10px">
+    <span class="chip">Anas Abuoun</span>
+    <span class="chip">Alaa Abuoun</span>
+    <span class="chip">Omar Aburoub</span>
+    <span class="chip">Hamad Haidar</span>
+  </div>
+</div>
+
+<!-- 2: THE PROBLEM -->
+<div class="slide" id="s1">
+  <span class="tag">The Problem</span>
+  <h1>Phishing is the<br/><em>#1 cyber threat</em></h1>
+  <div class="grid3">
+    <div class="card stat">
+      <div class="stat-num" style="color:#ef4444">91%</div>
+      <div class="stat-lbl">of all cyberattacks begin with a phishing email</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-num" style="color:#f59e0b">$4.9B</div>
+      <div class="stat-lbl">lost globally to phishing attacks in 2023</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-num" style="color:#3b82f6">3.4B</div>
+      <div class="stat-lbl">phishing emails sent around the world every day</div>
+    </div>
+  </div>
+  <p style="font-size:13px;color:#3a3a55;margin-top:20px;line-height:1.7">Even with firewalls and filters — <strong style="color:#525270">human error remains the weakest link.</strong> Current training is passive, template-based, and fails to adapt to individual risk levels.</p>
+</div>
+
+<!-- 3: OUR SOLUTION -->
+<div class="slide" id="s2">
+  <span class="tag">Our Solution</span>
+  <h1>Train employees<br/><em>the smart way</em></h1>
+  <div class="grid3">
+    <div class="card" style="border-left:3px solid #3b82f6">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">Simulate Real Attacks</div>
+      <div class="card-body">AI-crafted phishing emails sent in a safe, controlled environment — employees never see it coming</div>
+    </div>
+    <div class="card" style="border-left:3px solid #10b981">
+      <div class="card-icon">📚</div>
+      <div class="card-title">Train Instantly</div>
+      <div class="card-body">Employees who fall get immediate, personalized training showing the exact red flags they missed</div>
+    </div>
+    <div class="card" style="border-left:3px solid #f59e0b">
+      <div class="card-icon">📊</div>
+      <div class="card-title">Measure &amp; Adapt</div>
+      <div class="card-body">Dynamic vulnerability scores, department heatmaps, and adaptive difficulty that responds to each employee's risk level</div>
+    </div>
+  </div>
+</div>
+
+<!-- 4: RELATED WORK -->
+<div class="slide" id="s3">
+  <span class="tag">Related Work &amp; Competitive Positioning</span>
+  <h1 style="font-size:38px;margin-bottom:22px">How we compare<br/>to <em>existing tools</em></h1>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>System</th><th>Strength</th><th>Limitation</th><th>vs PhishGuard</th></tr></thead>
+      <tbody>
+        <tr><td><strong>GoPhish</strong></td><td class="muted">Open-source, flexible</td><td class="muted">No educational feedback</td><td><span class="tag-pill pill-green">We add AI + training</span></td></tr>
+        <tr><td><strong>KnowBe4</strong></td><td class="muted">Strong training library</td><td class="muted">Template-based, costly</td><td><span class="tag-pill pill-blue">We use local AI</span></td></tr>
+        <tr><td><strong>Cofense</strong></td><td class="muted">Enterprise reporting</td><td class="muted">Limited personalization</td><td><span class="tag-pill pill-amber">We adapt per user</span></td></tr>
+        <tr><td><strong>MS Defender</strong></td><td class="muted">Microsoft 365 integration</td><td class="muted">MS ecosystem only</td><td><span class="tag-pill pill-green">We are platform-free</span></td></tr>
+        <tr><td><strong style="color:#3b82f6">PhishGuard AI</strong></td><td class="muted">Local AI, adaptive, gamified</td><td class="muted">Prototype stage</td><td><span class="tag-pill pill-blue">Privacy-first</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 5: SYSTEM ARCHITECTURE -->
+<div class="slide" id="s4">
+  <span class="tag">System Architecture</span>
+  <h1 style="font-size:40px;margin-bottom:26px">3-layer<br/><em>web architecture</em></h1>
+  <div class="grid3">
+    <div class="arch-box">
+      <div class="arch-label" style="color:#3b82f6">⚛️ &nbsp;Frontend</div>
+      <div class="arch-item">React 18 <span class="tag-pill pill-blue">SPA</span></div>
+      <div class="arch-item">React Router <span style="color:#3a3a55">navigation</span></div>
+      <div class="arch-item">Recharts <span style="color:#3a3a55">dashboards</span></div>
+      <div class="arch-item">Lucide Icons <span style="color:#3a3a55">UI icons</span></div>
+      <div class="arch-item">JWT in localStorage <span style="color:#3a3a55">auth</span></div>
+    </div>
+    <div class="arch-box">
+      <div class="arch-label" style="color:#10b981">🐍 &nbsp;Backend API</div>
+      <div class="arch-item">Python Flask 3.0 <span class="tag-pill pill-green">REST</span></div>
+      <div class="arch-item">SQLAlchemy ORM <span style="color:#3a3a55">models</span></div>
+      <div class="arch-item">Flask-JWT-Extended <span style="color:#3a3a55">auth</span></div>
+      <div class="arch-item">bcrypt <span style="color:#3a3a55">passwords</span></div>
+      <div class="arch-item">CORS + RBAC <span style="color:#3a3a55">security</span></div>
+    </div>
+    <div class="arch-box">
+      <div class="arch-label" style="color:#a855f7">🧠 &nbsp;AI + Data</div>
+      <div class="arch-item">Ollama llama3.2 <span class="tag-pill pill-muted">local</span></div>
+      <div class="arch-item">SQLite / PostgreSQL <span style="color:#3a3a55">DB</span></div>
+      <div class="arch-item">Score Engine <span style="color:#3a3a55">0–100</span></div>
+      <div class="arch-item">Adaptive Engine <span style="color:#3a3a55">difficulty</span></div>
+      <div class="arch-item">Gamification Svc <span style="color:#3a3a55">badges</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- 6: KEY FEATURES — ADMIN -->
+<div class="slide" id="s5">
+  <span class="tag">Key Features — Admin Side</span>
+  <h1 style="font-size:40px;margin-bottom:24px">Full campaign<br/><em>control center</em></h1>
+  <div class="grid3">
+    <div class="card">
+      <div class="card-icon">📋</div>
+      <div class="card-title">Campaign Management</div>
+      <div class="card-body">Create, configure, activate, pause, and complete campaigns. Set topic, tone, urgency, difficulty, and target department</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🤖</div>
+      <div class="card-title" style="color:#3b82f6">AI Email Generator</div>
+      <div class="card-body">Generate 3–5 phishing email variations using LLaMA 3.2. Review, edit, and approve before any email is sent</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">👥</div>
+      <div class="card-title">User Management</div>
+      <div class="card-body">View all employees, risk levels, departments, vulnerability scores, and account status in one place</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📈</div>
+      <div class="card-title" style="color:#a855f7">Analytics Dashboard</div>
+      <div class="card-body">Organization overview, score trends, risk heatmap by department, top at-risk users, campaign statistics</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📄</div>
+      <div class="card-title">Reports &amp; Export</div>
+      <div class="card-body">Campaign reports with click rate, submission rate, report rate. Export to CSV for management presentations</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏆</div>
+      <div class="card-title" style="color:#f59e0b">Admin Leaderboard</div>
+      <div class="card-body">Monitor team-wide security performance, top performers, and compare departments by awareness score</div>
+    </div>
+  </div>
+</div>
+
+<!-- 7: KEY FEATURES — EMPLOYEE -->
+<div class="slide" id="s6">
+  <span class="tag">Key Features — Employee Side</span>
+  <h1 style="font-size:40px;margin-bottom:24px">Personal security<br/><em>experience</em></h1>
+  <div class="grid3">
+    <div class="card">
+      <div class="card-icon">🏠</div>
+      <div class="card-title">Personal Dashboard</div>
+      <div class="card-body">See your vulnerability score, points, recent activity, active campaigns, and quick stats at a glance</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📥</div>
+      <div class="card-title">Simulation Inbox</div>
+      <div class="card-body">Receive and view phishing simulation emails just like a real inbox — with a Report Phishing button</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎓</div>
+      <div class="card-title" style="color:#10b981">Just-in-Time Training</div>
+      <div class="card-body">Fall for a simulation? Get redirected immediately to a training page with the exact red flags you missed</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏅</div>
+      <div class="card-title" style="color:#f59e0b">Badges &amp; Points</div>
+      <div class="card-body">Earn badges for good security behavior — report phishing, complete training, maintain zero vulnerabilities</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🥇</div>
+      <div class="card-title" style="color:#3b82f6">Leaderboard</div>
+      <div class="card-body">Compete with colleagues on the security awareness leaderboard and see your rank in real time</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔐</div>
+      <div class="card-title">Account Security</div>
+      <div class="card-body">Change password, view score history, and track your improvement over time with trend charts</div>
+    </div>
+  </div>
+</div>
+
+<!-- 8: AI EMAIL GENERATION -->
+<div class="slide" id="s7">
+  <span class="tag">AI Email Generation Module</span>
+  <h1 style="font-size:40px;margin-bottom:24px">Powered by<br/><em>local LLaMA 3.2</em></h1>
+  <div class="grid2">
+    <div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title" style="font-size:14px;margin-bottom:14px">🔄 &nbsp;Generation Flow</div>
+        <div class="bullet"><div class="dot" style="background:#3b82f6"></div><div class="bt">Admin sets <strong>topic, tone, urgency, difficulty</strong></div></div>
+        <div class="bullet"><div class="dot" style="background:#3b82f6"></div><div class="bt">Backend builds a <strong>structured prompt</strong> with safety guardrails</div></div>
+        <div class="bullet"><div class="dot" style="background:#3b82f6"></div><div class="bt">Ollama generates <strong>3–5 email variations</strong> locally</div></div>
+        <div class="bullet"><div class="dot" style="background:#3b82f6"></div><div class="bt">Safety check runs before <strong>any output is saved</strong></div></div>
+        <div class="bullet"><div class="dot" style="background:#3b82f6"></div><div class="bt">Admin <strong>reviews, edits, approves</strong> one email</div></div>
+        <div class="bullet"><div class="dot" style="background:#3b82f6"></div><div class="bt">Fallback templates used if <strong>Ollama is offline</strong></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title" style="font-size:14px;margin-bottom:14px">📝 &nbsp;What AI produces</div>
+        <div class="bullet"><div class="dot" style="background:#10b981"></div><div class="bt">Realistic <strong>subject lines</strong> with urgency triggers</div></div>
+        <div class="bullet"><div class="dot" style="background:#10b981"></div><div class="bt"><strong>Sender impersonation</strong> — IT, HR, management</div></div>
+        <div class="bullet"><div class="dot" style="background:#10b981"></div><div class="bt">Embedded <strong>red flags</strong> referenced in the training page</div></div>
+        <div class="bullet"><div class="dot" style="background:#10b981"></div><div class="bt">Fake login page that <strong>never stores real credentials</strong></div></div>
+        <div class="bullet"><div class="dot" style="background:#10b981"></div><div class="bt"><strong>Prompt logs</strong> saved per campaign for audit</div></div>
+        <div class="bullet"><div class="dot" style="background:#10b981"></div><div class="bt">100% local — <strong>no data sent to external APIs</strong></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 9: HOW IT WORKS -->
+<div class="slide" id="s8">
+  <span class="tag">How It Works</span>
+  <h1 style="font-size:42px;margin-bottom:38px">4 steps from<br/><em>setup to insight</em></h1>
+  <div class="flow">
+    <div class="fstep"><div class="fcircle">📋</div><div class="ftitle">Create Campaign</div><div class="fdesc">Admin sets topic, tone,<br/>dept &amp; difficulty</div></div>
+    <div class="farrow">→</div>
+    <div class="fstep"><div class="fcircle">🤖</div><div class="ftitle">AI Generates Emails</div><div class="fdesc">LLaMA 3.2 crafts<br/>realistic phishing content</div></div>
+    <div class="farrow">→</div>
+    <div class="fstep"><div class="fcircle">📧</div><div class="ftitle">Employees Receive</div><div class="fdesc">Clicks, reports &amp; submissions<br/>tracked via tokens</div></div>
+    <div class="farrow">→</div>
+    <div class="fstep"><div class="fcircle">🎓</div><div class="ftitle">Train &amp; Score</div><div class="fdesc">Instant training + dynamic<br/>vulnerability score update</div></div>
+  </div>
+</div>
+
+<!-- 10: GAMIFICATION -->
+<div class="slide" id="s9">
+  <span class="tag">Engagement System</span>
+  <h1 style="font-size:42px;margin-bottom:24px">Security awareness<br/><em>made fun</em></h1>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title" style="font-size:14px;margin-bottom:16px">🏅 &nbsp;Badge System</div>
+      <div class="badge-grid">
+        <div class="badge-card"><div class="be">🛡️</div><div class="bn">First Defense</div><div class="bd">Reported first phish</div></div>
+        <div class="badge-card"><div class="be">🦅</div><div class="bn">Eagle Eye</div><div class="bd">Never been phished</div></div>
+        <div class="badge-card"><div class="be">🔒</div><div class="bn">Locksmith</div><div class="bd">Zero vulns 30 days</div></div>
+        <div class="badge-card"><div class="be">⭐</div><div class="bn">Top Performer</div><div class="bd">Leaderboard #1</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="font-size:14px;margin-bottom:16px">📊 &nbsp;Vulnerability Score (0–100)</div>
+      <div class="bullet"><div class="dot" style="background:#10b981"></div><div class="bt"><strong style="color:#10b981">+50 pts</strong> — Correctly report a phishing email</div></div>
+      <div class="bullet"><div class="dot" style="background:#10b981"></div><div class="bt"><strong style="color:#10b981">+25 pts</strong> — Complete a training module</div></div>
+      <div class="bullet"><div class="dot" style="background:#ef4444"></div><div class="bt"><strong style="color:#ef4444">−25 pts</strong> — Fall for a simulation</div></div>
+      <div style="height:1px;background:#1a1a28;margin:12px 0"></div>
+      <div class="bullet"><div class="dot" style="background:#ef4444"></div><div class="bt">Score &lt;30 → <strong style="color:#ef4444">High Risk</strong> — escalate difficulty</div></div>
+      <div class="bullet"><div class="dot" style="background:#f59e0b"></div><div class="bt">30–70 → <strong style="color:#f59e0b">Medium Risk</strong> — maintain level</div></div>
+      <div class="bullet"><div class="dot" style="background:#10b981"></div><div class="bt">&gt;70 → <strong style="color:#10b981">Low Risk</strong> — reward &amp; challenge more</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 11: ANALYTICS -->
+<div class="slide" id="s10">
+  <span class="tag">Analytics &amp; Reporting</span>
+  <h1 style="font-size:42px;margin-bottom:26px">Complete<br/><em>risk visibility</em></h1>
+  <div class="grid4">
+    <div class="card" style="text-align:center;padding:18px">
+      <div style="font-size:32px;margin-bottom:10px">🗺️</div>
+      <div class="card-title" style="font-size:13px">Risk Heatmap</div>
+      <div class="card-body">Which departments are most vulnerable</div>
+    </div>
+    <div class="card" style="text-align:center;padding:18px">
+      <div style="font-size:32px;margin-bottom:10px">📉</div>
+      <div class="card-title" style="font-size:13px">Score Trends</div>
+      <div class="card-body">Per-employee improvement over time</div>
+    </div>
+    <div class="card" style="text-align:center;padding:18px">
+      <div style="font-size:32px;margin-bottom:10px">🎯</div>
+      <div class="card-title" style="font-size:13px">Campaign Stats</div>
+      <div class="card-body">Click rate, submission rate, report rate</div>
+    </div>
+    <div class="card" style="text-align:center;padding:18px">
+      <div style="font-size:32px;margin-bottom:10px">📋</div>
+      <div class="card-title" style="font-size:13px">CSV Export</div>
+      <div class="card-body">Full data export for management reports</div>
+    </div>
+  </div>
+</div>
+
+<!-- 12: TECH STACK -->
+<div class="slide" id="s11">
+  <span class="tag">Tech Stack</span>
+  <h1 style="font-size:42px;margin-bottom:26px">Built with<br/><em>modern tech</em></h1>
+  <div class="grid4" style="margin-bottom:18px">
+    <div class="card" style="text-align:center;padding:18px">
+      <div style="font-size:30px;margin-bottom:9px">⚛️</div>
+      <div class="card-title" style="font-size:13px">React 18</div>
+      <div class="card-body">Frontend SPA</div>
+    </div>
+    <div class="card" style="text-align:center;padding:18px">
+      <div style="font-size:30px;margin-bottom:9px">🐍</div>
+      <div class="card-title" style="font-size:13px">Flask</div>
+      <div class="card-body">REST API Backend</div>
+    </div>
+    <div class="card" style="text-align:center;padding:18px">
+      <div style="font-size:30px;margin-bottom:9px">🦙</div>
+      <div class="card-title" style="font-size:13px">LLaMA 3.2</div>
+      <div class="card-body">Local AI Engine</div>
+    </div>
+    <div class="card" style="text-align:center;padding:18px">
+      <div style="font-size:30px;margin-bottom:9px">🗄️</div>
+      <div class="card-title" style="font-size:13px">SQLite</div>
+      <div class="card-body">Database</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:9px;flex-wrap:wrap">
+    <span style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;background:rgba(59,130,246,.1);color:#3b82f6;border:1px solid rgba(59,130,246,.25)">JWT Auth</span>
+    <span style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;background:rgba(16,185,129,.1);color:#10b981;border:1px solid rgba(16,185,129,.25)">SQLAlchemy ORM</span>
+    <span style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;background:rgba(245,158,11,.1);color:#f59e0b;border:1px solid rgba(245,158,11,.25)">Recharts</span>
+    <span style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;background:rgba(168,85,247,.1);color:#a855f7;border:1px solid rgba(168,85,247,.25)">bcrypt</span>
+    <span style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.25)">Ollama</span>
+    <span style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;background:#101018;color:#525270;border:1px solid #1a1a28">React Router</span>
+    <span style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;background:#101018;color:#525270;border:1px solid #1a1a28">Dark / Light Theme</span>
+  </div>
+</div>
+
+<!-- 13: DEMO -->
+<div class="slide center" id="s12">
+  <div style="font-size:72px;margin-bottom:20px">🚀</div>
+  <h1 style="font-size:54px;margin-bottom:12px">Live <em>Demo</em></h1>
+  <p style="font-size:16px;color:#525270">Let's see PhishGuard AI in action</p>
+  <div class="demo-items">
+    <span class="demo-step">① Admin login</span>
+    <span class="demo-step">② Create campaign</span>
+    <span class="demo-step">③ AI email generation</span>
+    <span class="demo-step">④ Employee receives phish</span>
+    <span class="demo-step">⑤ Just-in-time training</span>
+    <span class="demo-step">⑥ Analytics dashboard</span>
+  </div>
+</div>
+
+</div>
+
+<div class="pb" id="pb"></div>
+<div class="sn" id="sn">1 / 13</div>
+<div class="hint" id="hint">click anywhere or press → to advance</div>
+
+<script>
+const N=13;let cur=0;
+function go(n){
+  const ss=document.querySelectorAll('.slide');
+  ss[cur].classList.remove('active');ss[cur].classList.add('exit');
+  const p=cur;setTimeout(()=>ss[p].classList.remove('exit'),460);
+  cur=n;ss[cur].classList.add('active');
+  document.getElementById('pb').style.width=((cur+1)/N*100)+'%';
+  document.getElementById('sn').textContent=(cur+1)+' / '+N;
+  document.getElementById('hint').textContent=cur===N-1?'press ← to go back':'click anywhere or press → to advance';
+}
+document.querySelector('.deck').addEventListener('click',()=>{if(cur<N-1)go(cur+1)});
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();if(cur<N-1)go(cur+1)}
+  if(e.key==='ArrowLeft'){e.preventDefault();if(cur>0)go(cur-1)}
+});
+document.getElementById('pb').style.width=(1/N*100)+'%';
+</script>
+</body>
+</html>

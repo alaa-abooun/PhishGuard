@@ -62,11 +62,11 @@ def seed_database():
 
     # ── Employees ─────────────────────────────────────────────────────────────
     employees_data = [
-        ("Anas Abuoun",       "anas@acmecorp.com",       "IT",          75, 150),
-        ("Alaa Abuoun",       "alaa@acmecorp.com",        "Finance",     45, 80),
-        ("Omar Aburoub",      "omar@acmecorp.com",        "HR",          20, 30),
-        ("Mohammed Esbitan",  "mohammed@acmecorp.com",    "Marketing",   60, 100),
-        ("Hamad Haidar",      "hamad@acmecorp.com",       "IT",          85, 200),
+        ("Yousef Haddad",     "yousef@acmecorp.com",     "IT",          75, 150),
+        ("Dana Khoury",       "dana@acmecorp.com",        "Finance",     45, 80),
+        ("Tariq Saleh",       "tariq@acmecorp.com",       "HR",          20, 30),
+        ("Majd Odeh",         "majd@acmecorp.com",        "Marketing",   60, 100),
+        ("Ziad Fakhoury",     "ziad@acmecorp.com",        "IT",          85, 200),
         ("Sara Al-Mansour",   "sara@acmecorp.com",        "Finance",     30, 50),
         ("Khalid Barakat",    "khalid@acmecorp.com",      "HR",          55, 90),
         ("Nour Hadidi",       "nour@acmecorp.com",        "Marketing",   70, 120),
@@ -94,8 +94,8 @@ def seed_database():
 
     badge_awards = [
         ("lina@acmecorp.com", [first_reporter, champion, high_pts]),
-        ("anas@acmecorp.com",  [first_reporter, high_pts]),
-        ("hamad@acmecorp.com", [first_reporter, high_pts]),
+        ("yousef@acmecorp.com", [first_reporter, high_pts]),
+        ("ziad@acmecorp.com",  [first_reporter, high_pts]),
     ]
     for email, badges in badge_awards:
         user = employees.get(email)
@@ -241,7 +241,7 @@ You must reset it immediately to avoid account lockout.</p>
     print("\n─────────────────────────────────────────────────")
     print("  Login credentials:")
     print("  Admin:    admin@acmecorp.com   / Admin@1234")
-    print("  Employee: anas@acmecorp.com    / Employee@1234")
+    print("  Employee: yousef@acmecorp.com  / Employee@1234")
     print("  Employee: lina@acmecorp.com    / Employee@1234")
     print("─────────────────────────────────────────────────\n")
 

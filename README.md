@@ -1,10 +1,5 @@
 # PhishGuard AI — AI-Driven Phishing Simulation Platform
-### GP2 Graduation Project | Applied Science Private University | Faculty of IT
-
-> **Project:** AI-Driven Phishing Simulation Platform  
-> **Team:** Anas Abuoun, Alaa Abuoun, Omar Aburoub, Mohammed Esbitan, Hamad Haidar  
-> **Supervisor:** Dr. Mahmoud Aljawarneh  
-> **Year:** 2025–2026  
+> An AI-driven phishing simulation and security awareness training platform that runs realistic, safe phishing campaigns, tracks how users respond, and delivers just-in-time training.
 
 ---
 
@@ -92,7 +87,7 @@ On first run it:
 | Role | Email | Password |
 |------|-------|----------|
 | Admin | admin@acmecorp.com | Admin@1234 |
-| Employee | anas@acmecorp.com | Employee@1234 |
+| Employee | yousef@acmecorp.com | Employee@1234 |
 | Employee | lina@acmecorp.com | Employee@1234 |
 
 ---
@@ -128,7 +123,7 @@ Without Ollama, the system uses high-quality built-in template variations.
 ## 📁 Project Structure
 
 ```
-GP2/
+PhishGuard/
 ├── backend/
 │   ├── app/
 │   │   ├── models/          # SQLAlchemy database models
@@ -184,9 +179,6 @@ GP2/
 │       │   └── AuthContext.jsx
 │       └── services/
 │           └── api.js
-│
-└── gp2_report/
-    └── GP2_Report.md        # Full academic report
 ```
 
 ---
@@ -289,7 +281,7 @@ Score range: 0–100 (clamped)
 
 ## 🧪 Test Cases Summary
 
-See `gp2_report/GP2_Report.md` Chapter 5 for full black-box test cases.
+Black-box test cases:
 
 | Test ID | Description | Expected | Status |
 |---------|-------------|----------|--------|

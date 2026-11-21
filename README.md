@@ -3,6 +3,22 @@
 
 ---
 
+## 📸 Screenshots
+
+**Admin dashboard** — campaign performance, report/click rates and employee risk distribution
+
+![Admin dashboard](screenshots/dashboard.png)
+
+**Campaign detail** — AI-generated phishing email with the red-flag training content shown to employees
+
+![Campaign detail](screenshots/campaign.png)
+
+**Login**
+
+![Login page](screenshots/login.png)
+
+---
+
 ## ⚠️ Ethical Use Statement
 
 This platform is designed **exclusively** for authorized security awareness training. All phishing pages are simulations only. **Real passwords are never stored.** Only the event of a submission attempt is logged for educational purposes. All AI-generated content is filtered through safety guardrails to prevent offensive or harmful material.

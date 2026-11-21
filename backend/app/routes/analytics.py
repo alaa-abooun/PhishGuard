@@ -35,6 +35,11 @@ def overview():
     ).group_by(InteractionLog.action_type).all()
     counts = {a: c for a, c in action_counts}
 
+    total_sent = CampaignAssignment.query.filter_by(delivery_status="sent").count()
+    opened_total = sum(counts.get(a, 0) for a in
+                       ("opened", "clicked", "submitted_fake_credentials", "reported"))
+    clicked_total = counts.get("clicked", 0) + counts.get("submitted_fake_credentials", 0)
+
     # Avg vulnerability score
     avg_score = db.session.query(func.avg(User.vulnerability_score))\
                           .filter(User.role == "employee").scalar() or 50
@@ -65,10 +70,10 @@ def overview():
             "medium": medium_risk,
             "low": low_risk,
         },
-        "click_rate": _safe_rate(counts.get("clicked", 0),
-                                  counts.get("opened", 1)),
-        "report_rate": _safe_rate(counts.get("reported", 0),
-                                   counts.get("opened", 1)),
+        # Each user has one log for their furthest action, so anyone who
+        # clicked, submitted or reported also opened the email.
+        "click_rate": _safe_rate(clicked_total, opened_total),
+        "report_rate": _safe_rate(counts.get("reported", 0), total_sent),
     }), 200
 
 
